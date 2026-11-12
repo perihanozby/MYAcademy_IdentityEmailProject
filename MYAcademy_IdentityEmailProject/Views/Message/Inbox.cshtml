@@ -8,7 +8,7 @@
     ViewData["Title"] = "Inbox";
     Layout = "~/Views/MessageLayout/Index.cshtml";
 
-    var tr = new CultureInfo("tr-TR");
+    var tr = new CultureInfo("tr-TR"); 
     var totalCount = Model?.Count ?? 0;
     var unreadCount = Model?.Count(x => !x.IsRead) ?? 0;
 }
