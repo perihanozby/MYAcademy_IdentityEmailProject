@@ -1,0 +1,78 @@
+﻿
+    <!-- =====================================================
+         _Sidebar.cshtml
+         ===================================================== -->   
+
+<aside class="app-sidebar" id="appSidebar">
+
+        <div class="sidebar-brand">
+            <!-- Logo: zarf + bildirim noktası -->
+            <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                <rect width="32" height="32" rx="8" fill="#4D7A5B" />
+                <rect x="7.5" y="10" width="17" height="12.5" rx="2" fill="none" stroke="#FFFFFF" stroke-width="1.8" />
+                <path d="M8.5 11.5 L16 17 L23.5 11.5" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="24.5" cy="9.5" r="3.5" fill="#F0C9AE" stroke="#4D7A5B" stroke-width="1.5" />
+            </svg>
+            <div class="sidebar-brand-name">
+                Postane
+                <span class="sidebar-brand-tagline">Kurumsal E-posta</span>
+            </div>
+        </div>
+
+        <div class="sidebar-compose">
+            <a href="#" class="btn-compose">
+                <i class="bi bi-pencil-square"></i>
+                Yeni Mesaj
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-heading">Ana Menü</div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="sidebar-link"><i class="bi bi-grid"></i>Dashboard</a></li>
+                <li>
+                    <a href="#" class="sidebar-link active">
+                        <i class="bi bi-inbox"></i>Gelen Kutusu
+                        <span class="sidebar-count" id="sidebarUnreadCount">4</span>
+                    </a>
+                </li>
+                <li><a href="#" class="sidebar-link"><i class="bi bi-send"></i>Gönderilenler</a></li>
+                <li>
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-file-earmark-text"></i>Taslaklar
+                        <span class="sidebar-count">2</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-star"></i>Yıldızlı Mesajlar
+                        <span class="sidebar-count" id="sidebarStarredCount">3</span>
+                    </a>
+                </li>
+                <li><a href="#" class="sidebar-link"><i class="bi bi-trash3"></i>Çöp Kutusu</a></li>
+            </ul>
+
+            <div class="sidebar-heading">Hesap</div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="sidebar-link"><i class="bi bi-person"></i>Profilim</a></li>
+                <li><a href="#" class="sidebar-link"><i class="bi bi-gear"></i>Ayarlar</a></li>
+            </ul>
+
+            <div class="sidebar-heading">Etiketler</div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="sidebar-link"><i class="bi bi-tag-fill tag-work"></i>İş</a></li>
+                <li><a href="#" class="sidebar-link"><i class="bi bi-tag-fill tag-personal"></i>Kişisel</a></li>
+                <li><a href="#" class="sidebar-link"><i class="bi bi-tag-fill tag-important"></i>Önemli</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-storage">
+            <div class="storage-title">
+                <span><i class="bi bi-hdd me-1"></i> Depolama</span>
+                <span>%24</span>
+            </div>
+            <div class="storage-bar"><span style="width: 24%;"></span></div>
+            <div class="storage-text">2,4 GB / 10 GB kullanıldı</div>
+        </div>
+    </aside>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>

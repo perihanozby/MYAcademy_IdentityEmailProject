@@ -1,0 +1,180 @@
+﻿
+
+ @using System.Globalization
+@using MYAcademy_IdentityEmailProject
+@model List<Message>
+
+@{
+    ViewData["Title"] = "Inbox";
+    Layout = "~/Views/MessageLayout/Index.cshtml";
+
+    var tr = new CultureInfo("tr-TR");
+    var totalCount = Model?.Count ?? 0;
+    var unreadCount = Model?.Count(x => !x.IsRead) ?? 0;
+}
+
+@functions {
+    private static readonly CultureInfo Tr = new CultureInfo("tr-TR");
+    private static readonly string[] AvatarClasses =
+        { "avatar-sage", "avatar-mist", "avatar-sand", "avatar-peach", "avatar-stone", "avatar-rose" };
+
+    // "ayse.demir@ornek.com" -> "Ayse Demir"
+    public string SenderName(string? email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return "Bilinmeyen";
+        var local = email.Split('@')[0].Replace('.', ' ').Replace('_', ' ').Replace('-', ' ');
+        return Tr.TextInfo.ToTitleCase(local.ToLower(Tr));
+    }
+
+    // "Ayse Demir" -> "AD"
+    public string Initials(string name)
+    {
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return "?";
+        if (parts.Length == 1) return parts[0].Substring(0, Math.Min(2, parts[0].Length)).ToUpper(Tr);
+        return (parts[0][0].ToString() + parts[^1][0]).ToUpper(Tr);
+    }
+
+    // Aynı gönderen her zaman aynı rengi alır
+    public string AvatarClass(string? email)
+    {
+        var sum = (email ?? "").Sum(c => (int)c);
+        return AvatarClasses[sum % AvatarClasses.Length];
+    }
+
+    // Bugün -> 09:42, dün -> Dün, aynı yıl -> 9 Kas, eski -> 9 Kas 2025
+    public string FormatDate(DateTime date)
+    {
+        var today = DateTime.Today;
+        if (date.Date == today) return date.ToString("HH:mm", Tr);
+        if (date.Date == today.AddDays(-1)) return "Dün";
+        if (date.Year == today.Year) return date.ToString("d MMM", Tr);
+        return date.ToString("d MMM yyyy", Tr);
+    }
+
+    public string Preview(string? text, int max = 160)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return "";
+        var clean = System.Text.RegularExpressions.Regex.Replace(text, "<.*?>", " ").Trim();
+        return clean.Length <= max ? clean : clean.Substring(0, max).TrimEnd() + "…";
+    }
+
+    // Kategori adına göre etiket rengi
+    public string LabelClass(string? categoryName) => categoryName?.Trim().ToLower(Tr) switch
+    {
+        "iş" => "label-work",
+        "önemli" => "label-important",
+        "fatura" => "label-invoice",
+        "kişisel" => "label-personal",
+        "destek" => "label-support",
+        _ => "label-work"
+    };
+}
+
+<main class="inbox-container">
+
+    <div class="inbox-header">
+        <div>
+            <h1 class="inbox-title">
+                Gelen Kutusu
+                <span class="inbox-stat"><span id="totalCount">@totalCount</span> mesaj</span>
+                <span class="inbox-stat is-unread"><span id="unreadCount">@unreadCount</span> okunmamış</span>
+            </h1>
+            <p class="inbox-subtitle">Gelen mesajlarınızı görüntüleyin ve yönetin.</p>
+        </div>
+        <span class="inbox-updated"><i class="bi bi-arrow-repeat me-1"></i>Son eşitleme: bugün @DateTime.Now.ToString("HH:mm", tr)</span>
+    </div>
+
+    <!-- Filtreler ve arama -->
+    <div class="inbox-filter-bar">
+        <div class="inbox-filters" role="tablist">
+            <button type="button" class="inbox-filter active" data-filter="all">
+                Tümü <span class="filter-count" data-count="all">@totalCount</span>
+            </button>
+            <button type="button" class="inbox-filter" data-filter="unread">
+                Okunmamış <span class="filter-count" data-count="unread">@unreadCount</span>
+            </button>
+        </div>
+
+        <div class="inbox-search">
+            <i class="bi bi-search"></i>
+            <input type="search" id="inboxSearch" placeholder="Gönderen, konu veya içerikte ara" aria-label="Gelen kutusunda ara">
+        </div>
+    </div>
+
+    <section class="inbox-panel">
+
+        <!-- Toplu işlem araç çubuğu -->
+        <div class="inbox-toolbar" id="inboxToolbar">
+            <input class="form-check-input" type="checkbox" id="selectAll" data-bs-toggle="tooltip" data-bs-title="Tümünü seç" aria-label="Tümünü seç">
+
+            <span class="toolbar-divider"></span>
+
+            <button type="button" class="icon-btn bulk-action" id="markReadBtn" data-bs-toggle="tooltip" data-bs-title="Okundu olarak işaretle" aria-label="Okundu olarak işaretle">
+                <i class="bi bi-envelope-open"></i>
+            </button>
+            <button type="button" class="icon-btn bulk-action" id="markUnreadBtn" data-bs-toggle="tooltip" data-bs-title="Okunmadı olarak işaretle" aria-label="Okunmadı olarak işaretle">
+                <i class="bi bi-envelope"></i>
+            </button>
+            <button type="button" class="icon-btn bulk-action" id="deleteBtn" data-bs-toggle="tooltip" data-bs-title="Sil" aria-label="Sil">
+                <i class="bi bi-trash3"></i>
+            </button>
+
+            <span class="toolbar-divider"></span>
+
+            <a asp-action="Inbox" class="icon-btn" id="refreshBtn" data-bs-toggle="tooltip" data-bs-title="Yenile" aria-label="Yenile">
+                <i class="bi bi-arrow-clockwise"></i>
+            </a>
+
+            <span class="selection-info" id="selectionInfo"></span>
+
+            <div class="toolbar-pagination">
+                <span>@(totalCount == 0 ? "0" : $"1–{totalCount}") / @totalCount</span>
+                <button type="button" class="icon-btn" disabled aria-label="Önceki sayfa"><i class="bi bi-chevron-left"></i></button>
+                <button type="button" class="icon-btn" disabled aria-label="Sonraki sayfa"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <ul class="mail-list" id="mailList">
+            @if (Model != null)
+            {
+                foreach (var mail in Model)
+                {
+                    var name = SenderName(mail.SenderEmail);
+                    var categoryName = mail.Category?.CategoryName;
+
+                    <li class="mail-item" data-id="@mail.MessageId" data-read="@(mail.IsRead ? "true" : "false")">
+                        <label class="mail-select"><input class="form-check-input mail-check" type="checkbox" value="@mail.MessageId" aria-label="Mesajı seç"></label>
+                        <span class="mail-avatar @AvatarClass(mail.SenderEmail)">@Initials(name)</span>
+                        <span class="mail-sender" title="@mail.SenderEmail">@name</span>
+                        <a asp-controller="Message" asp-action="MessageDetail" asp-route-id="@mail.MessageId" class="mail-body">
+                            <span class="mail-subject">@mail.Subject</span>
+                            <span class="mail-preview">@Preview(mail.MessageDetail)</span>
+                        </a>
+                        <span class="mail-meta">
+                            @if (!string.IsNullOrEmpty(categoryName))
+                            {
+                                <span class="mail-label @LabelClass(categoryName)">@categoryName</span>
+                            }
+                            <time class="mail-date" datetime="@mail.SendDate.ToString("s")" title="@mail.SendDate.ToString("dd MMMM yyyy HH:mm", tr)">@FormatDate(mail.SendDate)</time>
+                        </span>
+                    </li>
+                }
+            }
+        </ul>
+
+        <!-- Liste boşsa veya filtre sonucu boşsa gösterilir -->
+        <div class="mail-empty" id="mailEmpty" @(totalCount == 0 ? "" : "hidden")>
+            <i class="bi bi-inbox"></i>
+            <strong>Mesaj bulunamadı</strong>
+            @(totalCount == 0 ? "Gelen kutunuzda henüz mesaj yok." : "Seçili filtre veya aramayla eşleşen bir mesaj yok.")
+        </div>
+
+        <div class="inbox-footer">
+            <span>Bu klasörde <span id="footerTotal">@totalCount</span> mesaj bulunuyor.</span>
+            <span class="d-none d-sm-inline">Mesajlar 30 gün sonra arşive taşınır.</span>
+        </div>
+    </section>
+</main>
+
+

@@ -1,0 +1,46 @@
+﻿  <!-- =================================================
+             _Navbar.cshtml
+             ================================================= -->
+        <header class="app-navbar">
+            <button type="button" class="icon-btn" id="sidebarToggle" aria-label="Menüyü aç/kapat">
+                <i class="bi bi-layout-sidebar"></i>
+            </button>
+
+            <form class="navbar-search" role="search" action="#">
+                <i class="bi bi-search"></i>
+                <input type="search" placeholder="Mesaj, kişi veya dosya ara…" aria-label="Genel arama">
+            </form>
+
+            <div class="navbar-actions">
+                <button type="button" class="icon-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Bildirimler" aria-label="Bildirimler">
+                    <i class="bi bi-bell"></i>
+                    <span class="notify-dot"></span>
+                </button>
+                <button type="button" class="icon-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Yardım" aria-label="Yardım">
+                    <i class="bi bi-question-circle"></i>
+                </button>
+
+                <span class="navbar-divider"></span>
+
+                <div class="dropdown">
+                    <button type="button" class="user-toggle dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="user-avatar">AY</span>
+                        <span class="d-none d-md-block">
+                            <span class="user-name">Ahmet Yılmaz</span>
+                            <span class="user-email">ahmet.yilmaz@ornek.com</span>
+                        </span>
+                        <i class="bi bi-chevron-down d-none d-md-inline"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="dropdown-header-user">
+                            <span class="user-name">Ahmet Yılmaz</span>
+                            <span class="user-email">ahmet.yilmaz@ornek.com</span>
+                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i>Profilim</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i>Ayarlar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item item-logout" href="#"><i class="bi bi-box-arrow-right"></i>Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
