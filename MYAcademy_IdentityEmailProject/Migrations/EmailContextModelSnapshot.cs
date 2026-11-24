@@ -35,7 +35,6 @@ namespace MYAcademy_IdentityEmailProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -46,7 +45,6 @@ namespace MYAcademy_IdentityEmailProject.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -89,6 +87,9 @@ namespace MYAcademy_IdentityEmailProject.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<int?>("ValidCode")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

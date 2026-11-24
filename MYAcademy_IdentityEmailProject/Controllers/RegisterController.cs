@@ -22,12 +22,17 @@ namespace MYAcademy_IdentityEmailProject.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp(UserRegisterViewModel userRegisterViewModel)
         {
+            Random random = new Random();
+            int ValidationCode = random.Next(100000, 1000000);
             AppUser appUser = new AppUser()
             {
                 Name = userRegisterViewModel.Name,
                 Surname = userRegisterViewModel.Surname,
                 Email = userRegisterViewModel.Email,
-                UserName = userRegisterViewModel.UserName
+                UserName = userRegisterViewModel.UserName,
+                Description="Test",
+                ImageUrl="Test",
+                ValidCode = ValidationCode
             };
 
             var result = await _userManager.CreateAsync(appUser, userRegisterViewModel.Password);
